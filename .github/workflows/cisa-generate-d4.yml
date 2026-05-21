@@ -1,16 +1,19 @@
-name: CISA Generate — D1
+name: CISA Generate D4
 
 on:
   workflow_dispatch:
     inputs:
       phase:
-        description: "1=문제만, 2=정답+해설"
         type: choice
         options: ["1", "2"]
         default: "1"
       count:
-        description: "문항 수 (비우면 ECO 기본 2)"
         required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
 
 jobs:
   generate:
@@ -21,14 +24,21 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r CISA/scripts/requirements.txt
-      - name: Generate D1
+      - name: Check GEMINI_API_KEY
+        run: |
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "::error::GEMINI_API_KEY secret missing"
+            exit 1
+          fi
+      - name: Generate D4
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          CISA_MODE: D1
+          CISA_MODE: D4
           CISA_PHASE: ${{ github.event.inputs.phase }}
           CISA_COUNT: ${{ github.event.inputs.count }}
         run: python CISA/scripts/generate_questions.py
       - uses: actions/upload-artifact@v4
         with:
-          name: cisa-D1-phase${{ github.event.inputs.phase }}
+          name: cisa-D4-phase${{ github.event.inputs.phase }}
           path: CISA/output/
+          if-no-files-found: error

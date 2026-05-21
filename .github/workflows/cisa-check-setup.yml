@@ -1,0 +1,28 @@
+name: CISA Check Setup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: List workflows and CISA files
+        run: |
+          echo "=== workflows ==="
+          ls -la .github/workflows/
+          echo "=== CISA ==="
+          ls -la CISA/scripts/
+          echo "=== materials (root) ==="
+          ls -1 MASTER_SYSTEM.md D1_IS감사프로세스.md CISA_PROJECT_INSTRUCTIONS.md 2>/dev/null || true
+      - name: Secret registered?
+        run: |
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "::warning::GEMINI_API_KEY is NOT set"
+            exit 1
+          fi
+          echo "GEMINI_API_KEY is set (value hidden)"

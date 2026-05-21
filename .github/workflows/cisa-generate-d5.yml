@@ -1,16 +1,19 @@
-name: CISA Generate — D5
+name: CISA Generate D5
 
 on:
   workflow_dispatch:
     inputs:
       phase:
-        description: "1=문제만, 2=정답+해설"
         type: choice
         options: ["1", "2"]
         default: "1"
       count:
-        description: "문항 수 (비우면 ECO 기본 3)"
         required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
 
 jobs:
   generate:
@@ -21,6 +24,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r CISA/scripts/requirements.txt
+      - name: Check GEMINI_API_KEY
+        run: |
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "::error::GEMINI_API_KEY secret missing"
+            exit 1
+          fi
       - name: Generate D5
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -32,3 +41,4 @@ jobs:
         with:
           name: cisa-D5-phase${{ github.event.inputs.phase }}
           path: CISA/output/
+          if-no-files-found: error

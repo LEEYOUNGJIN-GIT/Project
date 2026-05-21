@@ -1,0 +1,57 @@
+name: CISA Generate D1
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: "1=questions only, 2=answers and explanations"
+        type: choice
+        options: ["1", "2"]
+        default: "1"
+      count:
+        description: "Question count (empty = ECO default 2)"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify materials
+        run: |
+          test -f MASTER_SYSTEM.md || (echo "::error::MASTER_SYSTEM.md missing" && exit 1)
+          test -f D1_IS감사프로세스.md || (echo "::error::D1 file missing" && exit 1)
+          test -f CISA/scripts/generate_questions.py || (echo "::error::CISA script missing" && exit 1)
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r CISA/scripts/requirements.txt
+
+      - name: Check GEMINI_API_KEY secret
+        run: |
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "::error::Add repository secret GEMINI_API_KEY in Settings > Secrets > Actions"
+            exit 1
+          fi
+
+      - name: Generate D1
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CISA_MODE: D1
+          CISA_PHASE: ${{ github.event.inputs.phase }}
+          CISA_COUNT: ${{ github.event.inputs.count }}
+        run: python CISA/scripts/generate_questions.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cisa-D1-phase${{ github.event.inputs.phase }}
+          path: CISA/output/
+          if-no-files-found: error
