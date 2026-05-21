@@ -1,0 +1,34 @@
+name: CISA Generate — D4
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: "1=문제만, 2=정답+해설"
+        type: choice
+        options: ["1", "2"]
+        default: "1"
+      count:
+        description: "문항 수 (비우면 ECO 기본 3)"
+        required: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r CISA/scripts/requirements.txt
+      - name: Generate D4
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CISA_MODE: D4
+          CISA_PHASE: ${{ github.event.inputs.phase }}
+          CISA_COUNT: ${{ github.event.inputs.count }}
+        run: python CISA/scripts/generate_questions.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cisa-D4-phase${{ github.event.inputs.phase }}
+          path: CISA/output/

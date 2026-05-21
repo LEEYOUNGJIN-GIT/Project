@@ -1,0 +1,84 @@
+# CISA 문제 생성 로직 트리 설정
+# CISA_MODE 환경변수 → 이 파일의 modes.* 항목과 매칭
+
+repo:
+  # GitHub Project 저장소: D1~D5, MASTER_SYSTEM.md 등이 repo 루트에 있음
+  materials_dir: "."
+  output_dir: CISA/output
+
+modes:
+  D1:
+    type: single
+    label: "D1 — IS 감사 프로세스"
+    source_file: D1_IS감사프로세스.md
+    eco_weight: "18%"
+    default_count: 2
+    track_ratio: "A 70% / B 30%"
+
+  D2:
+    type: single
+    label: "D2 — 거버넌스·IT 관리"
+    source_file: D2_거버넌스IT관리.md
+    eco_weight: "18%"
+    default_count: 2
+    track_ratio: "A 70% / B 30%"
+
+  D3:
+    type: single
+    label: "D3 — 시스템 도입·개발·구현"
+    source_file: D3_시스템도입개발구현.md
+    eco_weight: "12%"
+    default_count: 1
+    track_ratio: "A 70% / B 30%"
+
+  D4:
+    type: single
+    label: "D4 — 운영·비즈니스 복원성"
+    source_file: D4_운영비즈니스복원성.md
+    eco_weight: "26%"
+    default_count: 3
+    track_ratio: "A 70% / B 30%"
+
+  D5:
+    type: single
+    label: "D5 — 정보자산 보호"
+    source_file: D5_정보자산보호.md
+    eco_weight: "26%"
+    default_count: 3
+    track_ratio: "A 70% / B 30%"
+
+  CROSS:
+    type: cross
+    label: "도메인 연계 문항"
+    default_count: 2
+    # 실전 세트 기준 연계 10~20% (10문항 → 1~2문항). 연계 전용 워크플로는 2문항 고정.
+    track_ratio: "A 80% / B 20%"
+    cross_pairs:
+      - id: D1-D2
+        domains: [D1, D2]
+        frequency: high
+        topics: "감사 헌장↔거버넌스, 위험 평가↔ERM, 감사위원회 보고 경로"
+      - id: D2-D5
+        domains: [D2, D5]
+        frequency: high
+        topics: "보안 정책 거버넌스, 데이터 분류↔접근통제, CISO 역할"
+      - id: D3-D4
+        domains: [D3, D4]
+        frequency: medium
+        topics: "변경관리↔릴리스, SDLC→운영 전환, CMDB"
+      - id: D4-D5
+        domains: [D4, D5]
+        frequency: medium
+        topics: "사고관리↔포렌식, 패치관리↔취약점 관리"
+      - id: D1-D5
+        domains: [D1, D5]
+        frequency: low
+        topics: "CAATs↔로그 분석, 감사 증거↔디지털 포렌식"
+
+shared:
+  always_load:
+    - CISA_PROJECT_INSTRUCTIONS.md
+    - KOREAN.md
+  master_excerpt_max_chars: 120000
+  model: gemini-2.0-flash
+  phase_default: "1"
