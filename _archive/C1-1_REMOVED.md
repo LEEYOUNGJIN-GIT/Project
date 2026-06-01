@@ -5,7 +5,7 @@
 - `SYSTEM.md` 단일 참조·v7.4 이전 헤더 등 **정본과 불일치**
 - 유지 시 MASTER·KOREAN·파이프라인 참조 혼선 유발
 
-**정본 경로 (유일):** `eng/C1/`
+**정본 경로:** GitHub [Project](https://github.com/LEEYOUNGJIN-GIT/Project) **repo 루트** (`MASTER_SYSTEM.md`, `D1~D5`, `KOREAN.md`). 로컬 개발 복사본은 `eng/C1/` 가능.
 
 | 파일 | 역할 |
 |------|------|

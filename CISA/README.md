@@ -11,7 +11,7 @@ CISA/
   output/                  ← 생성 결과 (gitignore)
 
 .github/workflows/CISA/   ← GitHub Actions가 실제 실행하는 YAML (6개)
-C1/                        ← 교재·MASTER_SYSTEM·D1~D5 (정본)
+MASTER_SYSTEM.md, KOREAN.md, D1~D5_*.md  ← repo 루트 (교재 정본)
 _archive/C1-1_REMOVED.md   ← 구 `C1 - 1` 사본 제거 안내
 ```
 
@@ -55,7 +55,7 @@ generate_questions.py
 - D1↔D3, D3↔D4, D4↔D5 (중빈도)
 - D1↔D5 (저빈도)
 
-교재 경로: 로컬 `materials_dir: C1`. GitHub Project(루트 배포)는 스크립트가 `C1/` 없을 때 repo 루트로 자동 fallback.
+교재 경로: **repo 루트** (`materials_dir: .`). 로컬 `eng/C1` 폴더에서 작업 시 `$env:CISA_MATERIALS_DIR = "C1"`.
 
 ## Actions 사용법
 
@@ -70,6 +70,6 @@ generate_questions.py
 $env:GEMINI_API_KEY = "your-key"
 $env:CISA_MODE = "D1"
 $env:CISA_PHASE = "1"
-# 기본: eng/C1 교재. 루트에 md만 있을 때: $env:CISA_MATERIALS_DIR = "."
+# repo 루트에서 clone 후 실행. eng/C1만 있을 때: $env:CISA_MATERIALS_DIR = "C1"
 python CISA/scripts/generate_questions.py
 ```

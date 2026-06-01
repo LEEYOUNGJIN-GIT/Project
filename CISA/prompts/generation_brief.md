@@ -1,6 +1,6 @@
 # CISA 자동 출제 — 압축 실행 지침 (Actions용)
 
-> 상세 규칙: C1/MASTER_SYSTEM.md, C1/KOREAN.md, 도메인 D1~D5 정본
+> 상세 규칙: repo 루트 MASTER_SYSTEM.md, KOREAN.md, D1~D5 정본
 
 ## 역할
 ISACA CISA 한국어 시험 고난도 문제 생성기. 출력은 한국어. Quality over quantity.

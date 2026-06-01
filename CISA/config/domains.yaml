@@ -2,9 +2,8 @@
 # CISA_MODE 환경변수 → 이 파일의 modes.* 항목과 매칭
 
 repo:
-  # 로컬 eng 정본: C1/. GitHub Project(교재가 repo 루트)는 스크립트가 C1 없을 때 "." 자동 fallback
-  # 또는 Actions env: CISA_MATERIALS_DIR=.
-  materials_dir: C1
+  # 교재(MASTER, KOREAN, D1~D5)는 repo 루트. 로컬 eng/C1 개발 시: CISA_MATERIALS_DIR=C1
+  materials_dir: "."
   output_dir: CISA/output
 
 modes:
