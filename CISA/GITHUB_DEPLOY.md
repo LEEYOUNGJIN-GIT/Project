@@ -8,7 +8,9 @@ CISA/                    ← 스크립트·설정·output
 .gitignore               ← CISA/output 제외
 ```
 
-교재 경로: **repo 루트** (`D1_IS감사프로세스.md`, `MASTER_SYSTEM.md` 등 — 이미 GitHub에 있음)
+교재 경로: **repo 루트** (`D1_IS감사프로세스.md`, `MASTER_SYSTEM.md` 등 — 이미 GitHub에 있음).  
+`domains.yaml`의 `materials_dir: C1`은 로컬 eng용이며, 루트에 교재만 있으면 스크립트가 **자동으로 루트**를 사용한다.  
+명시하려면 워크플로 `env`에 `CISA_MATERIALS_DIR: .` 추가.
 
 ## 1. Secret 등록
 

@@ -11,7 +11,8 @@ CISA/
   output/                  ← 생성 결과 (gitignore)
 
 .github/workflows/CISA/   ← GitHub Actions가 실제 실행하는 YAML (6개)
-C1/                        ← 교재·MASTER_SYSTEM·D1~D5
+C1/                        ← 교재·MASTER_SYSTEM·D1~D5 (정본)
+_archive/C1-1_REMOVED.md   ← 구 `C1 - 1` 사본 제거 안내
 ```
 
 > GitHub는 **`.github/workflows/`** 아래 YAML만 자동 실행합니다.  
@@ -48,11 +49,13 @@ generate_questions.py
 | D5        | single | D5_정보자산보호.md                    | 3        |
 | CROSS     | cross  | D1~D5 중 pair에 해당하는 파일 (최대 5개) | 2        |
 
-### CROSS pair (MASTER §4)
+### CROSS pair (`MASTER §16 STEP 0-B` = `domains.yaml`)
 
 - D1↔D2, D2↔D5 (고빈도)
-- D3↔D4, D4↔D5 (중빈도)
+- D1↔D3, D3↔D4, D4↔D5 (중빈도)
 - D1↔D5 (저빈도)
+
+교재 경로: 로컬 `materials_dir: C1`. GitHub Project(루트 배포)는 스크립트가 `C1/` 없을 때 repo 루트로 자동 fallback.
 
 ## Actions 사용법
 
@@ -67,5 +70,6 @@ generate_questions.py
 $env:GEMINI_API_KEY = "your-key"
 $env:CISA_MODE = "D1"
 $env:CISA_PHASE = "1"
+# 기본: eng/C1 교재. 루트에 md만 있을 때: $env:CISA_MATERIALS_DIR = "."
 python CISA/scripts/generate_questions.py
 ```

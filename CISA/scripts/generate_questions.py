@@ -29,6 +29,7 @@ except ImportError:
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "CISA" / "config" / "domains.yaml"
 PROMPTS_DIR = ROOT / "CISA" / "prompts"
+MASTER_FILENAME = "MASTER_SYSTEM.md"
 
 
 @dataclass
@@ -46,6 +47,27 @@ class GenerationPlan:
 def load_config() -> dict[str, Any]:
     with CONFIG_PATH.open(encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def resolve_materials_dir(cfg: dict[str, Any]) -> Path:
+    """교재 디렉터리: CISA_MATERIALS_DIR > domains.yaml > C1 없으면 repo 루트."""
+    override = os.environ.get("CISA_MATERIALS_DIR", "").strip()
+    if override:
+        p = ROOT / override
+    else:
+        configured = ROOT / cfg["repo"]["materials_dir"]
+        if (configured / MASTER_FILENAME).exists():
+            p = configured
+        elif (ROOT / MASTER_FILENAME).exists():
+            p = ROOT
+        else:
+            p = configured
+    if not (p / MASTER_FILENAME).exists():
+        raise FileNotFoundError(
+            f"Missing {MASTER_FILENAME} under {p}. "
+            "Set CISA_MATERIALS_DIR (e.g. C1 or .) or copy materials into repo."
+        )
+    return p
 
 
 def read_text(path: Path, max_chars: int | None = None) -> str:
@@ -85,7 +107,7 @@ def domain_file(materials: Path, domain_id: str) -> Path:
 
 def resolve_plan(cfg: dict[str, Any], mode: str) -> GenerationPlan:
     """CISA_MODE → GenerationPlan (파일 목록 + user 프롬프트)."""
-    materials = ROOT / cfg["repo"]["materials_dir"]
+    materials = resolve_materials_dir(cfg)
     shared = cfg["shared"]
     modes = cfg["modes"]
     if mode not in modes:
@@ -202,7 +224,7 @@ Track: {spec.get("track_ratio", "A 80% / B 20%")}
 
 
 def build_system_instruction(plan: GenerationPlan, cfg: dict[str, Any]) -> str:
-    materials = ROOT / cfg["repo"]["materials_dir"]
+    materials = resolve_materials_dir(cfg)
     max_master = cfg["shared"]["master_excerpt_max_chars"]
     parts: list[str] = []
 
